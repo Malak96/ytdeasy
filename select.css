@@ -1,6 +1,12 @@
 Screen {
-    align: center top;
+    align: center middle;
 }
+
+Select {
+    align: center middle;
+    width: 90;
+    margin: 2;
+} 
 
 
 .box {
@@ -14,6 +20,7 @@ Screen {
 }
 
 .grid {
+    align: center middle;
     margin: 2;
     padding: 1;
     width: 95;
@@ -35,17 +42,16 @@ Button {
     align: center middle;
 }
 
-.container_select {
-    align: center top;
-    background: magenta;
+.select {
+    align: center middle;
+    width: 80;
+    margin: 2;
 }
 
 #heading {
     border-bottom: solid rgb(255, 0, 85);
 }
 
-
-Select {
-    width: 80;
-    margin: 2;
+#footer {
+    border-top: solid rgb(255, 0, 85);
 }

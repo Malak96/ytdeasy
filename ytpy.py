@@ -5,7 +5,6 @@ import subprocess
 import json
 #import test2
 console = Console()
-
 a_table=[]
 v_table=[]
 """
@@ -67,12 +66,10 @@ def filter_json(url):
     for f in formatos:
         if f["filesize"] is not None:
             try:
-                #filesize_kb = f"{int(f['filesize']) / (1024):.2f}"
                 size=["B","KB","MB","GB","?"]
                 count_size=0
                 filesize_kb = f['filesize']
                 while True:
-                    #if filesize_kb > 1023 : filesize_kb = f"{int(f['filesize']) / (1024):.2f}"
                     if filesize_kb >= 1024:
                         count_size=count_size+1
                         filesize_kb = int(filesize_kb) / 1024
@@ -107,16 +104,27 @@ def filter_json(url):
             
         except(ValueError,TypeError):
             fps = ""
-        
-        if vcodec == None and acodec != None:
-            #a_table.add_row(f["format_id"], f["ext"], filesize_kb, str(f["abr"]), acodec, f["format_note"])
-            a_table.append(f"{f["format_id"]} - {f["ext"]} - {filesize_kb} - {str(f["abr"])} - {acodec} - {f["format_note"]}")
+        # if vcodec == None and acodec != None:
+        #     #a_table.add_row(f["format_id"], f["ext"], filesize_kb, str(f["abr"]), acodec, f["format_note"])
+        #     a_table.append(f"{f["format_id"]} - {f["ext"]} - {filesize_kb} - {str(f["abr"])}kbps - {acodec} - {f["format_note"]}")
             
-        elif vcodec != None:
-            #v_table.add_row(f["format_id"], f["ext"], f["resolution"], filesize_kb, fps, str(f["vbr"]), vcodec, f["format_note"])
-            v_table.append(f"{f["format_id"]} - {f["ext"]} - {f["resolution"]} - {filesize_kb} - {fps} - {str(f["vbr"])} - {vcodec} - {f["format_note"]}")
+        # elif vcodec != None:
+        #     #v_table.add_row(f["format_id"], f["ext"], f["resolution"], filesize_kb, fps, str(f["vbr"]), vcodec, f["format_note"])
+        #     v_table.append(f"{f["format_id"]} - {f["ext"]} - {f["resolution"]} - {filesize_kb} - {fps} - {str(f["vbr"])}kbps - {vcodec} - {f["format_note"]}")
 
-    return a_table, v_table, url
+        if vcodec is None and acodec is not None:
+            a_table.append((
+                f"{f['ext']}|{filesize_kb}|{str(f['abr'])}kbps|{acodec}|{f['format_note']}",
+                f["format_id"]
+            ))
+
+        elif vcodec is not None:
+            v_table.append(( 
+                f"{f['ext']}|{f['resolution']}|{filesize_kb}|{fps}|{str(f['vbr'])}kbps|{vcodec}|{f['format_note']}",
+                f["format_id"]
+            ))
+
+    return a_table, v_table
 
     """
     command =["./yt-dlp.exe", "--no-warnings","-q", "-j", url]
@@ -132,14 +140,6 @@ def filter_json(url):
     return formatos_filtrados
     """
 
-#a, v, x = (filter_json("https://www.youtube.com/watch?v=xOMMV_qXcQ8"))#("https://www.youtube.com/watch?v=B3Gm9eplhCY&t=1s"))
-
 
 if __name__ == "__main__":
     print(None)
-
-
-#a=("1","2","3")
-#v=("a","b","c","d","e","f")
-#x=("x")
-#test2.select_format(a,v, x)
