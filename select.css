@@ -1,11 +1,29 @@
-Screen {
-    align: center middle;
+/*Screen {
+    align: center top;
+}*/
+
+#scroll_area {
+    /*height: 90vh; /* Limita la altura para forzar el scroll */
+    overflow-y: auto; /* Activa el scroll si el contenido es mayor */
+    border: solid 1px gray; /* Para visualizar los límites */
 }
 
-Select {
+
+.url_container {
+    align: center top;
+    height: 6;
+    padding: 1;
+}
+.center_all {
+    align: center top;
+}
+.center_m {
     align: center middle;
-    width: 90;
-    margin: 2;
+}
+Select {
+    align: center top;
+   /* width: 90; */
+    margin: 1;
 } 
 
 
@@ -20,38 +38,30 @@ Select {
 }
 
 .grid {
-    align: center middle;
-    margin: 2;
-    padding: 1;
+    align: center top;
+    margin: 1;
+    padding: 0;
     width: 95;
     height:30;
-    border: heavy white;
+    border: heavy rgba(0, 0, 0, 0);
 }
 
-Button {
+/* Button {
     margin: 1 2;
     
-}
+} */
 
 
-#container {
+/* #container {
     border: heavy red;
-}
+} */
 
 .container {
-    align: center middle;
+    align: center top;
 }
 
 .select {
-    align: center middle;
+    align: center top;
     width: 80;
     margin: 2;
-}
-
-#heading {
-    border-bottom: solid rgb(255, 0, 85);
-}
-
-#footer {
-    border-top: solid rgb(255, 0, 85);
 }

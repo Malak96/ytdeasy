@@ -5,8 +5,6 @@ import subprocess
 import json
 #import test2
 console = Console()
-a_table=[]
-v_table=[]
 """
 a_table = Table(title="Formatos de audio dispononibles")
 a_table.add_column("ID", style="cyan", justify="right")
@@ -30,7 +28,8 @@ v_table.add_column("Extra", style= "magenta",justify="right")
 
 def read_link (url):
     
-    command = ["./yt-dlp.exe", "--no-warnings", "--cookies","./cookies.txt", "-q", "-j", url]
+    #command = ["./yt-dlp.exe", "--no-warnings","--no-playlist", "--cookies","./cookies.txt", "-q", "-j", url]
+    command = ["./yt-dlp.exe", "--no-warnings","--no-playlist", "-q", "-j", url]
     salida = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     try:
@@ -58,6 +57,8 @@ def read_link (url):
     
     
 def filter_json(url):
+    a_table=[]
+    v_table=[]
     formatos = read_link(url)
     if not formatos:
         print("No se encontraron formatos disponibles.")
