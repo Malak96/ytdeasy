@@ -5,7 +5,7 @@ from textual.containers import Container, VerticalScroll, Horizontal, Vertical, 
 from textual.screen import Screen, ModalScreen
 from textual.theme import BUILTIN_THEMES
 from textual.widgets import (
-    Select, Label, Input, Button, TabbedContent
+    Select, Label, Input, Button, TabbedContent, LoadingIndicator
 )
 
 formats = [("mp4 (Video)", "mp4"),
@@ -42,7 +42,7 @@ class InputUrl(Screen):
             self.app.push_screen(DownloadOptions(a_table, v_table))
 
 class DownloadOptions(Screen):
-    CSS_PATH = "select.css"
+    CSS_PATH = "assents.css"
     def __init__(self, a_table=None, v_table=None):
         super().__init__()
         self.id_a = ""
@@ -52,20 +52,23 @@ class DownloadOptions(Screen):
     def compose(self) -> ComposeResult:
         self.app.theme = "monokai"
         #with VerticalScroll():
-        with TabbedContent("Descargar", "Configuraciones", id="tab_c", classes="center_all", disabled=False):
+        with TabbedContent("Descargar", "Configuraciones", id="tab_c", classes="tab_align", disabled=False):
             with VerticalScroll():
                 #with ItemGrid(min_column_width=1,regular=True):
                 with ItemGrid(min_column_width=1,regular=True,classes="center_all"):
                     yield Input(placeholder="Click derecho para copiar el portapapeles", id="url_input",value="https://www.youtube.com/watch?v=CsrmS0id6So")
                     #yield Button("", id="paste_btn")
                     yield Button("Verificar URL", id="analizar_btn")
+                
                 yield Label(id="resultado_label")
+                with Container(classes="Select"):
+                    yield LoadingIndicator()
                 yield Select(self.a_table, prompt="Selecciona el audio", classes="Select", id="select_audio")
                 yield Select(self.v_table, prompt="Selecciona el video", classes="Select", id="select_video")
                 yield Select(formats, prompt="Formato de Salida", classes="Select", id="output_format")
                 yield Label("Audio ID: ", id="a-seleccion_label")
                 yield Label("Video ID: ", id="v-seleccion_label")
-                with Horizontal():
+                with Horizontal(classes="cont_btn_op"):
                     yield Button("Cancelar", variant="success",id="cancelar_btn")
                     yield Button("Descargar")
             with Vertical():

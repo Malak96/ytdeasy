@@ -1,13 +1,10 @@
-from rich import print  
-from rich.console import Console
-from rich.table import Table
+
 import subprocess
 import json
-console = Console()
 
 def read_link (url):
     
-    command = ["C:/Users/angel/OneDrive/Documentos/ytdeasy/yt-dlp.exe", "--no-warnings","--no-playlist", "--cookies","./cookies.txt", "-q", "-j", url]
+    command = ["yt-dlp.exe", "--no-warnings","--no-playlist", "--cookies","./cookies.txt", "-q", "-j", url]
     #command = ["./yt-dlp.exe", "--no-warnings","--no-playlist", "-q", "-j", url]
     salida = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
