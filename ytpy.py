@@ -3,33 +3,12 @@ from rich.console import Console
 from rich.table import Table
 import subprocess
 import json
-#import test2
 console = Console()
-"""
-a_table = Table(title="Formatos de audio dispononibles")
-a_table.add_column("ID", style="cyan", justify="right")
-a_table.add_column("Extensión", style="magenta", justify="right")
-a_table.add_column("Tamaño", style="green", justify="right")
-a_table.add_column("Bitrate", style="yellow", justify="right")
-a_table.add_column("Codec", style="blue", justify="right")
-a_table.add_column("Extra",style="magenta",justify="right")
-
-v_table = Table(title="Formatos de video Disponibles")
-v_table.add_column("ID", style="cyan", justify="right")
-v_table.add_column("Extensión", style="magenta", justify="right")
-v_table.add_column("Resolución", style="green", justify="right")
-v_table.add_column("Tamaño", style="yellow", justify="right")
-v_table.add_column("FPS", style="blue", justify="right")
-v_table.add_column("Bitrate", style="yellow", justify="right")
-v_table.add_column("Codec",style="cyan",justify="right")
-v_table.add_column("Extra", style= "magenta",justify="right")
-"""
-
 
 def read_link (url):
     
-    #command = ["./yt-dlp.exe", "--no-warnings","--no-playlist", "--cookies","./cookies.txt", "-q", "-j", url]
-    command = ["./yt-dlp.exe", "--no-warnings","--no-playlist", "-q", "-j", url]
+    command = ["C:/Users/angel/OneDrive/Documentos/ytdeasy/yt-dlp.exe", "--no-warnings","--no-playlist", "--cookies","./cookies.txt", "-q", "-j", url]
+    #command = ["./yt-dlp.exe", "--no-warnings","--no-playlist", "-q", "-j", url]
     salida = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     try:
@@ -100,7 +79,7 @@ def filter_json(url):
             acodec = None
             
         try:
-            fps = str(f["fps"])
+            fps = str(f["fps"]) + "FPS"
             if fps == "None" or fps == "none": fps=""
             
         except(ValueError,TypeError):

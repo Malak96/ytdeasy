@@ -1,14 +1,32 @@
-/*Screen {
-    align: center top;
-}*/
 
-#scroll_area {
-    /*height: 90vh; /* Limita la altura para forzar el scroll */
-    overflow-y: auto; /* Activa el scroll si el contenido es mayor */
-    border: solid 1px gray; /* Para visualizar los límites */
+Screen {
+    align: center top;
 }
 
+QuitScreen {
+    align: center middle;
+}
 
+#dialog {
+    grid-size: 2;
+    grid-gutter: 1 2;
+    grid-rows: 1fr 3;
+    padding: 0 1;
+    width: 60;
+    height: 11;
+    border: thick $background 80%;
+    background: $surface;
+}
+
+#question {
+    column-span: 2;
+    height: 1fr;
+    width: 1fr;
+    content-align: center middle;
+}
+.quit_btn {
+    width: 100%;
+}
 .url_container {
     align: center top;
     height: 6;
@@ -20,12 +38,21 @@
 .center_m {
     align: center middle;
 }
+.center_b {
+    align: center bottom;
+}
+Input{
+    text-align: center;
+    height: 1;
+}
 Select {
     align: center top;
    /* width: 90; */
     margin: 1;
 } 
-
+Label {
+    margin: 1;
+}	
 
 .box {
     width: 40;
@@ -37,19 +64,15 @@ Select {
     border: heavy white;
 }
 
-.grid {
+/* .grid {
     align: center top;
     margin: 1;
     padding: 0;
     width: 95;
     height:30;
     border: heavy rgba(0, 0, 0, 0);
-}
-
-/* Button {
-    margin: 1 2;
-    
 } */
+
 
 
 /* #container {

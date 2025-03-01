@@ -1,90 +1,146 @@
-import ytpy 
-from textual import on ,containers
+import ytpy
+from textual import on
 from textual.app import App, ComposeResult
-from textual.containers import Container, VerticalScroll, Horizontal, Vertical 
+from textual.containers import Container, VerticalScroll, Horizontal, Vertical, Grid, ItemGrid
+from textual.screen import Screen, ModalScreen
 from textual.theme import BUILTIN_THEMES
 from textual.widgets import (
-    Select,
-    Label,
-    Input,
-    Header,
-    TabbedContent,
-    TextArea, 
-    Button, 
-    Static)
-id_a = ""
-id_v = ""
+    Select, Label, Input, Button, TabbedContent
+)
 
-class UserSelected(App):
-    #self.theme = BUILTIN_THEMES["dark"]
-    CSS_PATH = "select.css"
+formats = [("mp4 (Video)", "mp4"),
+           ("webm (Video)", "webm"),
+           ("mkv (Video)", "mkv"),
+           ("mp3 (Audio)", "mp3"),
+           ("m4a (Audio)", "m4a"),
+           ("opus (Audio)", "opus")]
+class InputUrl(Screen):
+    
+    
     def compose(self) -> ComposeResult:
-        with VerticalScroll():
-        # Crear los widgets
-            with Container(id="menu",classes="center_all") as container:
-            #    container.border_title = "Menu"
-                with Container(classes="url_container"):
-                    #yield Header("Descargar Videos de Youtube",level=1,classes="center_all")
-                    with containers.ItemGrid(min_column_width=2, regular=False,classes="center_m"):
-                        yield Input(placeholder="Pega una URL",id="url_input")
-                        yield Button("Analizar",variant="success",id="analizar_btn",classes="center_all")
-                    
-                with TabbedContent ("Descargar Video", "Descargar Audio", "Configuraciones",classes="center_all"):
-                    with Container(classes="container"):
-                        yield Label(id="resultado_label") 
-                        yield Label("Secciona Los formatos de audio y video")
-                        yield Select([],prompt="Selecciona un formato de audio",classes="Select",id="audio")
-                        yield Select([],prompt="Selecciona un formato de video",classes="Select",id="video")
-                        yield Label("Audio ID: ",id="a-seleccion_label") 
-                        yield Label("Video ID: ",id="v-seleccion_label")
-                    with Container(classes="container"):
-                        #yield Static("Secciona el formato de audio")
-                        yield Select([],prompt="Selecciona un formato de audio",classes="select",id="audio_only")
-                        
-                        yield Label("Audio ID: ", id="a-seleccion_label")
+        
+        with Container(classes="center_all"):
+            with Grid(classes="center_all"):
+                yield Input(placeholder="Pega una URL", id="url_input",value="https://www.youtube.com/watch?v=CsrmS0id6So")
+                yield Button("🔎", id="analizar_btn", classes="center_all")
+                yield Button("Salir", id="salir_btn")
+    @on(Button.Pressed, "#salir_btn")
+    def salir(self, event: Button.Pressed) -> None:
+        """Mostrar pantalla de confirmación para salir."""      
+        self.app.push_screen(QuitScreen()) 
 
-                # Crear los botones
-                    cancel_button = Button("Cancelar",variant="success")
-                    download_button = Button("Descargar")
-                    with Horizontal():
-                        yield cancel_button
-                        yield download_button
-        @on(Button.Pressed, "#analizar_btn")
-        def analizar_url(self, event: Button.Pressed) -> None:
-            """Acción cuando se presiona el botón 'Analizar'."""
-            url = self.query_one("#url_input", Input).value
-            a_table = None
-            v_table = None
-            a_table , v_table =  ytpy.filter_json(url)
-            self.query_one("#audio", Select).set_options(a_table)
-            self.query_one("#audio_only", Select).set_options(a_table)
-            self.query_one("#video", Select).set_options(v_table)
-            resultado = f"URL: {url}\nFormatos actualizados."
-            self.query_one("#resultado_label", Label).update(resultado)
+    @on(Button.Pressed, "#analizar_btn")
+    def analizar_url(self, event: Button.Pressed) -> None:
+        """Acción cuando se presiona el botón 'Analizar'."""
+        url = self.query_one("#url_input", Input).value
+        a_table , v_table =  ytpy.filter_json(url)
+        #resultado = f"URL: {url}\nFormatos actualizados."
+        #self.query_one("#resultado_label", Label).update(resultado)
+        a_table = [("Audio 1", "1"), ("Audio 2", "2"), ("Audio 3", "3")]
+        v_table = [("Video 1", "1"), ("Video 2", "2"), ("Video 3", "3")]
+        if url:
+            self.app.push_screen(DownloadOptions(a_table, v_table))
 
-    @on(Select.Changed, "#audio")
+class DownloadOptions(Screen):
+    CSS_PATH = "select.css"
+    def __init__(self, a_table=None, v_table=None):
+        super().__init__()
+        self.id_a = ""
+        self.id_v = ""
+        self.a_table = a_table or []
+        self.v_table = v_table or []
+    def compose(self) -> ComposeResult:
+        self.app.theme = "monokai"
+        #with VerticalScroll():
+        with TabbedContent("Descargar", "Configuraciones", id="tab_c", classes="center_all", disabled=False):
+            with VerticalScroll():
+                #with ItemGrid(min_column_width=1,regular=True):
+                with ItemGrid(min_column_width=1,regular=True,classes="center_all"):
+                    yield Input(placeholder="Click derecho para copiar el portapapeles", id="url_input",value="https://www.youtube.com/watch?v=CsrmS0id6So")
+                    #yield Button("", id="paste_btn")
+                    yield Button("Verificar URL", id="analizar_btn")
+                yield Label(id="resultado_label")
+                yield Select(self.a_table, prompt="Selecciona el audio", classes="Select", id="select_audio")
+                yield Select(self.v_table, prompt="Selecciona el video", classes="Select", id="select_video")
+                yield Select(formats, prompt="Formato de Salida", classes="Select", id="output_format")
+                yield Label("Audio ID: ", id="a-seleccion_label")
+                yield Label("Video ID: ", id="v-seleccion_label")
+                with Horizontal():
+                    yield Button("Cancelar", variant="success",id="cancelar_btn")
+                    yield Button("Descargar")
+            with Vertical():
+                theme_name = []
+                for themes in BUILTIN_THEMES:
+                    theme_name.append((themes,themes))
+                yield Select(theme_name, prompt="Selecciona un tema", classes="Select", id="theme_select")
+                yield Button("Aplicar", id="apply_theme")
+
+                
+    @on(Button.Pressed, "#analizar_btn")
+    def analizar_url(self, event: Button.Pressed) -> None:
+        """Acción cuando se presiona el botón 'Analizar'."""
+        url = self.query_one("#url_input", Input).value
+        a_table , v_table =  ytpy.filter_json(url)
+        self.query_one("#select_audio", Select).set_options(a_table)
+        self.query_one("#select_video", Select).set_options(v_table)
+        #resultado = f"URL: {url}\nFormatos actualizados."
+        #self.query_one("#resultado_label", Label).update(resultado)
+        #a_table = [("Audio 1", "1"), ("Audio 2", "2"), ("Audio 3", "3")]
+        #v_table = [("Video 1", "1"), ("Video 2", "2"), ("Video 3", "3")]
+
+
+    @on(Button.Pressed, "#apply_theme")
+    def apply_theme(self, event: Button.Pressed) -> None:
+        """Aplicar tema seleccionado"""
+        theme = self.query_one("#theme_select", Select).value
+        self.app.theme = theme
+        self.notify(f"Tema aplicado: {theme}")
+        
+    @on(Button.Pressed, "#cancelar_btn")
+    def cancelar(self, event: Button.Pressed) -> None:
+        """Volver a la pantalla de inicio"""
+        self.app.push_screen(QuitScreen())
+    @on(Select.Changed, "#select_audio")
     def audio_selected(self, event: Select.Changed) -> None:
-        """Acción cuando se selecciona un formato de audio."""
-        if event.value != Select.BLANK:
-            selected = event.value
-        else:
-            selected = ""
-        id_a = selected
-        self.query_one("#a-seleccion_label", Label).update(f"Audio ID: {id_a}")
-    
-    @on(Select.Changed, "#video")
+        """Actualizar ID de audio"""
+        self.id_a = event.value if event.value != Select.BLANK else ""
+        self.query_one("#a-seleccion_label", Label).update(f"Audio ID: {self.id_a}")
+
+    @on(Select.Changed, "#select_video")
     def video_selected(self, event: Select.Changed) -> None:
-        """Acción cuando se selecciona un formato de video."""
-        if event.value != Select.BLANK:
-            selected = event.value
+        """Actualizar ID de video"""
+        self.id_v = event.value if event.value != Select.BLANK else ""
+        self.query_one("#v-seleccion_label", Label).update(f"Video ID: {self.id_v}")
+
+    @on(Select.Changed, "#output_format")
+    def output_format(self, event: Select.Changed) -> None:
+        """Habilitar o deshabilitar selección de video según formato"""
+        selectes = str(event.value)
+        self.query_one("#select_video", Select).disabled = selectes in ["m4a", "mp3", "opus"]
+        self.notify(f"Formato seleccionado: {selectes}")
+
+class QuitScreen(ModalScreen):
+    """Screen with a dialog to quit."""
+
+    def compose(self) -> ComposeResult:
+        yield Grid(
+            Label("Are you sure you want to quit?", id="question"),
+            Button("Quit", variant="error", id="quit",classes="quit_btn"),
+            Button("Cancel", variant="primary", id="cancel",classes="quit_btn"),
+            id="dialog",
+        )
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "quit":
+            self.app.exit()
         else:
-            selected = ""
-        id_v = selected
-        self.query_one("#v-seleccion_label", Label).update(f"Video ID: {id_v}")
+            self.app.pop_screen()
 
+class App(App):
 
+    def on_mount(self) -> None:
+        self.push_screen(DownloadOptions([],[]))  # Instanciar correctamente
 
-
-app = UserSelected()
-app.run()
-    
+if __name__ == "__main__":
+    app = App()
+    app.run()
