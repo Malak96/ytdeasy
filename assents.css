@@ -9,10 +9,21 @@ Button{
 QuitScreen {
     align: center middle;
 }
+Verfy_URL {
+    align: center middle;
+}
 .cont_btn_op {
     align: center middle;
     width: 100%;
     height: 5;
+}
+#Verfy_URL {
+    grid-size: 1;
+    grid-rows: 1fr 3;
+    width: 60;
+    height: 11;
+    border: thick $background 80%;
+    background: $surface;
 }
 #dialog {
     grid-size: 2;
@@ -74,4 +85,3 @@ Label {
 .container {
     align: center top;
 }
-

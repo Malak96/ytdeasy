@@ -29,13 +29,14 @@ def read_link (url):
         }
         for f in resultado_json.get('formats', [])
     ]
-    return formatos_filtrados
+    title = resultado_json.get("title", None)
+    return formatos_filtrados, title
     
     
 def filter_json(url):
     a_table=[]
     v_table=[]
-    formatos = read_link(url)
+    formatos, title = read_link(url)
     if not formatos:
         print("No se encontraron formatos disponibles.")
         return
@@ -77,10 +78,10 @@ def filter_json(url):
             
         try:
             fps = str(f["fps"]) + "FPS"
-            if fps == "None" or fps == "none": fps=""
+            if fps == "None" or fps == "none": fps=None
             
         except(ValueError,TypeError):
-            fps = ""
+            fps = None
         # if vcodec == None and acodec != None:
         #     #a_table.add_row(f["format_id"], f["ext"], filesize_kb, str(f["abr"]), acodec, f["format_note"])
         #     a_table.append(f"{f["format_id"]} - {f["ext"]} - {filesize_kb} - {str(f["abr"])}kbps - {acodec} - {f["format_note"]}")
@@ -95,13 +96,16 @@ def filter_json(url):
                 f["format_id"]
             ))
 
+
         elif vcodec is not None:
             v_table.append(( 
                 f"{f['ext']}|{f['resolution']}|{filesize_kb}|{fps}|{str(f['vbr'])}kbps|{vcodec}|{f['format_note']}",
                 f["format_id"]
             ))
 
-    return a_table, v_table
+            
+
+    return a_table, v_table, title , formatos
 
     """
     command =["./yt-dlp.exe", "--no-warnings","-q", "-j", url]
