@@ -6,7 +6,7 @@ from textual.containers import Container, VerticalScroll, Horizontal, Vertical, 
 from textual.screen import Screen, ModalScreen
 from textual.theme import BUILTIN_THEMES
 from textual.widgets import (
-    Select, Label, Input, Button, TabbedContent, LoadingIndicator
+    Select, Label, Input, Button, TabbedContent, LoadingIndicator, ListItem,ListView
 )
 
 formats = [("mp4 (Video)", "mp4"),
@@ -55,9 +55,16 @@ class DownloadOptions(Screen):
     def compose(self) -> ComposeResult:
         self.app.theme = "monokai"
         #with VerticalScroll():
+
         with TabbedContent("Inicio","Descargas", "Configuraciones", id="tab_c", classes="tab_align", disabled=False):
             with VerticalScroll():
                 #with ItemGrid(min_column_width=1,regular=True):
+                with Container(classes="center_all"):
+                    yield ListView(
+                        ListItem(Label("One")),
+                        ListItem(Label("Two")),
+                        ListItem(Label("Three")),
+                    )
                 with ItemGrid(min_column_width=1,regular=True,classes="center_all"):
                     yield Input(placeholder="Click derecho para pegar", id="url_input",value="https://www.youtube.com/watch?v=CsrmS0id6So")
                     #yield Button("", id="paste_btn")
@@ -98,11 +105,6 @@ class DownloadOptions(Screen):
         self.query_one("#title_label", Label).update(f"Título: {self.title}")
         
         self.notify("URL verificada correctamente.",timeout=2)
-
-    @on(Focus)
-    async def on_focus(self, event: Focus) -> None:
-        """Cuando el campo de entrada recibe foco, borra el contenido y pega el contenido del portapapeles."""
-        self.notify("Pega la URL en el campo de entrada.")
 
     @on(Button.Pressed, "#analizar_btn")
     def analizar_url(self, event: Button.Pressed) -> None:
