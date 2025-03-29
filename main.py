@@ -172,7 +172,7 @@ class MyApp(App):
 def read_link (url):
     
     #command = ["yt-dlp.exe", "--no-warnings","--no-playlist", "--cookies","cookies.txt", "-q", "-j", url]
-    command = ["yt-dlp.exe", "--no-warnings","--no-playlist", "-q", "-j", url]
+    command = ["C://yt-dlp.exe", "--no-warnings","--no-playlist", "-q", "-j", url]
     salida = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
     try:
